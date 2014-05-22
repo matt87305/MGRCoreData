@@ -11,6 +11,7 @@
 
 @interface MGRCoreData : NSObject
 @property (strong, nonatomic, readonly) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic, readonly) NSManagedObjectContext *backgroundContext;
 @property (strong, nonatomic, readonly) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic, readonly) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic, readonly) NSString *stackStoreModelName;

@@ -11,6 +11,7 @@
 
 @interface MGRCoreData ()
 @property (strong, nonatomic, readwrite) NSManagedObjectContext *managedObjectContext;
+@property (strong, nonatomic, readwrite) NSManagedObjectContext *backgroundContext;
 @property (strong, nonatomic, readwrite) NSManagedObjectModel *managedObjectModel;
 @property (strong, nonatomic, readwrite) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic, readwrite) NSString *stackStoreModelName;
@@ -31,6 +32,19 @@
 }
 
 
+- (NSManagedObjectContext *)backgroundContext {
+    if (_backgroundContext != nil) {
+        return _backgroundContext;
+    }
+    
+    _backgroundContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+    //You actually want the background context to create the main one
+    _backgroundContext.parentContext = self.managedObjectContext;
+    
+    return _backgroundContext;
+}
+
+
 // Lazy Accessor Returns the managed object context for the application.
 - (NSManagedObjectContext *)managedObjectContext
 {
@@ -40,7 +54,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;
